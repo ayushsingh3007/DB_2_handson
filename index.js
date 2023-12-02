@@ -1,7 +1,17 @@
-const express=require('express')
-const app=express()
-const donenv=require('dotenv').config()
-const PORT=process.env.PORT||4000;////agar port number number env file me nhi ho to 
-app.listen(PORT,()=>{
+const express = require('express');
+const dbConnect = require('./config/dbConnect');
+const app = express();
+const dotenv = require('dotenv').config();
+const PORT = process.env.PORT || 4000;
+
+const authUser = require('./routes/authUser');
+const bodyParser = require('body-parser');
+
+dbConnect();
+app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use('/api/user', authUser);
+
+app.listen(PORT, () => {
     console.log(`server is running on port ${PORT}`);
-})
+});

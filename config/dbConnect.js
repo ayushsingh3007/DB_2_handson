@@ -1,3 +1,11 @@
+
+const {default:mongoose}=require('mongoose')
 const dbConnect=()=>{
-    const conn=mongoose.connect()
+    try{
+        const conn=mongoose.connect(process.env.Mongourl)
+    }
+    catch(err){
+        console.log(err);
+    }
 }
+module.exports=dbConnect;
