@@ -14,7 +14,7 @@ const createUser =asyncHandler( async (req, res) => {
         const newuser = await User.create(req.body);
         return res.json(newuser);
     } else {
-       throw new Error("User Already Exists")
+       console.log("User Already Exists")
     }
 });
 ///login a user
@@ -34,7 +34,7 @@ const loginUserCtrl=asyncHandler(async (req,res)=>{
       })
     }
     else{
-        throw new Error('invalid candentials please check the password')
+        console.log('invalid candentials please check the password')
     }
 })
 
@@ -54,7 +54,7 @@ const getallUser=asyncHandler(async(req,res)=>{
 
   }
   catch(err){
-        throw new Error(err)
+        console.log(err);
   }
 })
 ///for getting a single user
@@ -67,7 +67,7 @@ const getUser=asyncHandler(async(req,res)=>{
      })
   }
   catch(err){
-    throw new Error(err)
+    console.log(err)
   }
 })
 ////delete a user
@@ -125,7 +125,7 @@ const blockUser=asyncHandler(async(req,res)=>{
           res.json({message:"User Blocked"})
     }
     catch(err){
-      throw new Error(err)
+      console.log(err)
     }
 })
 
@@ -144,7 +144,7 @@ const unblockUser=asyncHandler(async(req,res)=>{
         res.json({message:"User unBlocked"})
   }
   catch(err){
-    throw new Error(err)
+    console.log(err)
   }
 })
 module.exports = { createUser,loginUserCtrl,getallUser,getUser,deleteUser,updateUser,blockUser,unblockUser,logoutUser };

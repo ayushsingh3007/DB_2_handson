@@ -16,7 +16,7 @@ dbConnect();
 app.use(cors())
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: false }));
-app.post('/api/products', (req, res) => {
+app.post('/api/user', (req, res) => {
     const jsonData = JSON.stringify(data);
     res.setHeader('Content-Type', 'application/json');
     res.end(jsonData);
