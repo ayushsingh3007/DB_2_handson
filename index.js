@@ -8,6 +8,7 @@ const PORT = process.env.PORT || 4000;
 const authUser = require('./routes/authUser');
 const bodyParser = require('body-parser');
 const { notfound, errorHandler } = require('./middlewares/errorHandler');
+const { data } = require('./routes/data');
 
 
 
@@ -15,7 +16,11 @@ dbConnect();
 app.use(cors())
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: false }));
-
+app.post('/api/products', (req, res) => {
+    const jsonData = JSON.stringify(data);
+    res.setHeader('Content-Type', 'application/json');
+    res.end(jsonData);
+  });
 app.use('/api/user', authUser);
 app.use(notfound)
 app.use(errorHandler)

@@ -38,6 +38,14 @@ const loginUserCtrl=asyncHandler(async (req,res)=>{
     }
 })
 
+const logoutUser = asyncHandler(async (req, res) => {
+  // Optionally, you can perform additional actions during logout, such as invalidating tokens, updating user status, etc.
+
+  res.json({ success: true, message: 'Logout successful' });
+});
+
+
+
 /////get all tha users
 const getallUser=asyncHandler(async(req,res)=>{
   try{
@@ -139,4 +147,4 @@ const unblockUser=asyncHandler(async(req,res)=>{
     throw new Error(err)
   }
 })
-module.exports = { createUser,loginUserCtrl,getallUser,getUser,deleteUser,updateUser,blockUser,unblockUser };
+module.exports = { createUser,loginUserCtrl,getallUser,getUser,deleteUser,updateUser,blockUser,unblockUser,logoutUser };
