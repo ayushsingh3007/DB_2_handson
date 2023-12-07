@@ -2,7 +2,8 @@
 const { response } = require('express');
 const generateToken = require('../config/jwtToken.js');
 const User = require('../model/userModel.js')
-const asyncHandler=require("express-async-handler")
+const asyncHandler=require("express-async-handler");
+const { data } = require('../routes/data.js');
 
 ///user create karne ke liye use kar raha
 const createUser =asyncHandler( async (req, res) => {
@@ -147,4 +148,73 @@ const unblockUser=asyncHandler(async(req,res)=>{
     console.log(err)
   }
 })
-module.exports = { createUser,loginUserCtrl,getallUser,getUser,deleteUser,updateUser,blockUser,unblockUser,logoutUser };
+ 
+const userdata=asyncHandler(async(req,res)=>{
+  const {id}=req.body
+  res.json(data)
+})
+
+
+const addtocart = asyncHandler(async (req, res) => {
+  const { userId, productId, quantity } = req.body;
+
+  try {
+    // Find the user by ID
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // Check if the product is already in the user's cart
+    const existingProductIndex = user.cart.findIndex(item => item.productId === productId);
+
+    if (existingProductIndex !== -1) {
+      // If the product is already in the cart, update the quantity
+      user.cart[existingProductIndex].quantity += quantity;
+    } else {
+      // If the product is not in the cart, add it
+      user.cart.push({
+        productId,
+        quantity,
+        // ... other details of the product
+      });
+    }
+
+    // Save the updated user document
+    await user.save();
+
+    return res.status(200).json({ message: 'Product added to cart successfully' });
+  } catch (error) {
+    console.error('Error adding to cart:', error.message);
+    return res.status(500).json({ message: 'Internal server error' });
+  }
+});
+
+const paymentController=asyncHandler(async (req, res) => {
+    try {
+      const { amount, currency } = req.body;
+  
+      // Create a PaymentIntent with the order amount and currency
+      const paymentIntent = await stripe.paymentIntents.create({
+        amount,
+        currency,
+      });
+  
+      res.status(200).json({ clientSecret: paymentIntent.client_secret });
+    } catch (error) {
+      console.error('Error creating PaymentIntent:', error.message);
+      res.status(500).json({ error: 'Internal server error' });
+    }
+  
+})
+
+
+
+
+
+
+
+
+ 
+module.exports = {paymentController,addtocart, createUser,loginUserCtrl,getallUser,getUser,deleteUser,updateUser,blockUser,unblockUser,logoutUser,userdata };

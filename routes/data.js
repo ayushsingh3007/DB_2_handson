@@ -1,4 +1,4 @@
-const express=require('express').Router();
+
 
  
 const data=
@@ -28,7 +28,7 @@ const data=
         "type": 'new',
     },
     {
-        "id": 13,
+        "id": 16,
         "Name": 'Sumsung TV',
         "price": '26',
         "image": 'image/p13.jpeg',
@@ -36,7 +36,7 @@ const data=
         "type": 'new',
     },
     {
-        "id": 14,
+        "id": 17,
         "Name": 'UV TV',
         "price": '26',
         "image": '',
@@ -44,7 +44,7 @@ const data=
         "type": 'new',
     },
     {
-        "id": 15,
+        "id": 18,
         "Name": 'Dell',
         "price": '96',
         "image": '',
@@ -52,7 +52,7 @@ const data=
         "type": 'new',
     },
     {
-        "id": 7,
+        "id":19,
         "Name": 'Intex',
         "price": '96',
         "image": '',
@@ -60,7 +60,7 @@ const data=
         "type": 'new',
     },
     {
-        "id": 8,
+        "id": 20,
         "Name": 'Lenovo',
         "price": '96',
         "image": '',
@@ -68,7 +68,7 @@ const data=
         "type": 'new',
     },
     {
-        "id": 9,
+        "id": 21,
         "Name": 'HP',
         "price": '96',
         "image": '',
@@ -76,7 +76,7 @@ const data=
         "type": 'new',
     },
     {
-        "id": 10,
+        "id": 21,
         "Name": 'Toshiba',
         "price": '96',
         "image": '',
@@ -85,7 +85,7 @@ const data=
     },
 
     {
-        "id": 11,
+        "id": 22,
         "Name": 'product3',
         "price": '236',
         "image": 'image/p3.webp',
@@ -93,7 +93,7 @@ const data=
         "type": 'new',
     },
     {
-        "id": 12,
+        "id": 23,
         "Name": 'product4',
         "price": '636',
         "image": 'image/p9.jpg',
@@ -101,7 +101,7 @@ const data=
         "type": 'new',
     },
     {
-        "id": 13,
+        "id": 24,
         "Name": 'product5',
         "price": '98',
         "image": 'image/p4.webp',
@@ -109,7 +109,7 @@ const data=
         "type": 'featured',
     },
     {
-        "id": 14,
+        "id": 25,
         "Name": 'product6',
         "price": '59',
         "image": 'image/p5.webp',
@@ -125,7 +125,7 @@ const data=
         "type": 'featured',
     },
     {
-        "id": 16,
+        "id": 25,
         "Name": 'product8',
         "price": '389',
         "image": 'image/p11.jpg',
@@ -133,7 +133,7 @@ const data=
         "type": 'featured',
     },
     {
-        "id": 17,
+        "id": 26,
         "Name": 'product9',
         "price": '67',
         "image": 'image/p6.webp',
@@ -141,7 +141,7 @@ const data=
         "type": 'top',
     },
     {
-        "id": 18,
+        "id": 26,
         "Name": 'product10',
         "price": '76',
         "image": 'image/p7.webp',
@@ -149,7 +149,7 @@ const data=
         "type": 'top',
     },
     {
-        "id": 19,
+        "id": 27,
         "Name": 'product11',
         "price": '87',
         "image": 'image/p8.webp',
@@ -157,7 +157,7 @@ const data=
         "type": 'top',
     },
     {
-        "id": 19,
+        "id": 28,
         "Name": 'product12',
         "price": '807',
         "image": 'image/p12.jpg',
@@ -165,5 +165,7 @@ const data=
         "type": 'top',
     }
 ]
+
+
 
 module.exports={data};
