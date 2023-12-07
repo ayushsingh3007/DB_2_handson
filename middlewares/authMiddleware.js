@@ -14,10 +14,10 @@ const authMiddleware = asyncHandler(async (req, res, next) => {
           next();
         }
       } catch (err) {
-         throw new Error(err,'Authorization has failed. Please log in again.');
+        res.status(401).json({ message: 'Authorization has failed. Please log in again.' });
       }
     } else {
-       throw new Error('There is no token.');
+      throw new Error('You are not an admin.');
     }
   });
   
@@ -33,7 +33,7 @@ const isAdmin = asyncHandler(async (req, res, next) => {
     }
   });
   
-  module.exports = { authMiddleware, isAdmin };
+  
   
 
 module.exports={authMiddleware,isAdmin};

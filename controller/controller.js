@@ -1,36 +1,57 @@
 
-const { response } = require('express');
-const generateToken = require('../config/jwtToken.js');
+
+const {generateToken} = require('../config/jwtToken.js');
 const User = require('../model/userModel.js')
 const asyncHandler=require("express-async-handler");
 const { data } = require('../routes/data.js');
+const jwt=require('jsonwebtoken')
 
-///user create karne ke liye use kar raha
-const createUser =asyncHandler( async (req, res) => {
+
+
+
+
+
+
+
+
+//user create karne ke liye use kar raha
+ const createUser =asyncHandler( async (req, res) => {
     const email = req.body.email;
-    const finduser = await User.findOne({email} );
+    const findUser = await User.findOne({email:email} );
 
-    if (!finduser) {
+    if (!findUser) {
         ///new user crete karne ke liye 
-        const newuser = await User.create(req.body);
-        return res.json(newuser);
+        const newUser = await User.create(req.body);
+       res.json(newUser);
     } else {
        throw new Error("User Already Exists")
     }
 });
+
+
+
+
+
+
+
+
+
+
+
+
 ///login a user
 const loginUserCtrl=asyncHandler(async (req,res)=>{
     const {email,password}=req.body;
-    const findUSER=await User.findOne({email})
+    const findUser=await User.findOne({email})
     ///check kar rahe ki user exist hai ya nahi
-    if(findUSER && await  findUSER.isPasswordMatch(password)){
+    if(findUser && (await  findUser.isPasswordMatched(password))){
       res.json({
-        _id:findUSER?._id,
-        firstname:findUSER?.firstname,
-        lastname:findUSER?.lastname,
-        email:findUSER?.email,
-        number:findUSER?.number,
-        token:generateToken(findUSER?._id)
+        _id:findUser?._id,
+        firstname:findUser?.firstname,
+        lastname:findUser?.lastname,
+        email:findUser?.email,
+        number:findUser?.number,
+        token:generateToken(findUser?._id)
 
       })
     }
@@ -39,11 +60,40 @@ const loginUserCtrl=asyncHandler(async (req,res)=>{
     }
 })
 
-const logoutUser = asyncHandler(async (req, res) => {
-  // Optionally, you can perform additional actions during logout, such as invalidating tokens, updating user status, etc.
 
-  res.json({ success: true, message: 'Logout successful' });
+// logout functionality
+
+const logout = asyncHandler(async (req, res) => {
+  const cookie = req.cookies;
+  if (!cookie?.refreshToken) throw new Error("No Refresh Token in Cookies");
+  const refreshToken = cookie.refreshToken;
+  const user = await User.findOne({ refreshToken });
+  if (!user) {
+    res.clearCookie("refreshToken", {
+      httpOnly: true,
+      secure: true,
+    });
+    return res.sendStatus(204); // forbidden
+  }
+  await User.findOneAndUpdate(refreshToken, {
+    refreshToken: "",
+  });
+  res.clearCookie("refreshToken", {
+    httpOnly: true,
+    secure: true,
+  });
+  res.sendStatus(204); 
 });
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -155,59 +205,68 @@ const userdata=asyncHandler(async(req,res)=>{
 })
 
 
-const addtocart = asyncHandler(async (req, res) => {
-  const { userId, productId, quantity } = req.body;
-
+const userCart = asyncHandler(async (req, res) => {
+  const { cart } = req.body;
+  const { _id } = req.user;
+  validateMongoDbId(_id);
   try {
-    // Find the user by ID
-    const user = await User.findById(userId);
-
-    if (!user) {
-      return res.status(404).json({ message: 'User not found' });
+    let products = [];
+    const user = await User.findById(_id);
+    // check if user already have product in cart
+    const alreadyExistCart = await Cart.findOne({ orderby: user._id });
+    if (alreadyExistCart) {
+      alreadyExistCart.remove();
     }
-
-    // Check if the product is already in the user's cart
-    const existingProductIndex = user.cart.findIndex(item => item.productId === productId);
-
-    if (existingProductIndex !== -1) {
-      // If the product is already in the cart, update the quantity
-      user.cart[existingProductIndex].quantity += quantity;
-    } else {
-      // If the product is not in the cart, add it
-      user.cart.push({
-        productId,
-        quantity,
-        // ... other details of the product
-      });
+    for (let i = 0; i < cart.length; i++) {
+      let object = {};
+      object.product = cart[i]._id;
+    
+      let getPrice = await Product.findById(cart[i]._id).select("price").exec();
+      object.price = getPrice.price;
+      products.push(object);
     }
-
-    // Save the updated user document
-    await user.save();
-
-    return res.status(200).json({ message: 'Product added to cart successfully' });
+    let cartTotal = 0;
+    for (let i = 0; i < products.length; i++) {
+      cartTotal = cartTotal + products[i].price * products[i].count;
+    }
+    let newCart = await new Cart({
+      products,
+      cartTotal,
+      orderby: user?._id,
+    }).save();
+    res.json(newCart);
   } catch (error) {
-    console.error('Error adding to cart:', error.message);
-    return res.status(500).json({ message: 'Internal server error' });
+    throw new Error(error);
   }
 });
 
-const paymentController=asyncHandler(async (req, res) => {
-    try {
-      const { amount, currency } = req.body;
-  
-      // Create a PaymentIntent with the order amount and currency
-      const paymentIntent = await stripe.paymentIntents.create({
-        amount,
-        currency,
-      });
-  
-      res.status(200).json({ clientSecret: paymentIntent.client_secret });
-    } catch (error) {
-       throw new Error('Error creating PaymentIntent:', error.message);
-      res.status(500).json({ error: 'Internal server error' });
-    }
-  
-})
+const getUserCart = asyncHandler(async (req, res) => {
+  const { _id } = req.user;
+  validateMongoDbId(_id);
+  try {
+    const cart = await Cart.findOne({ orderby: _id }).populate(
+      "products.product"
+    );
+    res.json(cart);
+  } catch (error) {
+    throw new Error(error);
+  }
+});
+
+const emptyCart = asyncHandler(async (req, res) => {
+  const { _id } = req.user;
+  validateMongoDbId(_id);
+  try {
+    const user = await User.findOne({ _id });
+    const cart = await Cart.findOneAndRemove({ orderby: user._id });
+    res.json(cart);
+  } catch (error) {
+    throw new Error(error);
+  }
+});
+
+
+
 
 
 
@@ -217,4 +276,4 @@ const paymentController=asyncHandler(async (req, res) => {
 
 
  
-module.exports = {paymentController,addtocart, createUser,loginUserCtrl,getallUser,getUser,deleteUser,updateUser,blockUser,unblockUser,logoutUser,userdata };
+module.exports = {userCart,getUserCart,emptyCart ,createUser,loginUserCtrl,getallUser,getUser,deleteUser,updateUser,blockUser,unblockUser,logout,userdata };

@@ -17,8 +17,8 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use('/api/user', (req, res) => {
   const jsonData = JSON.stringify(data);
-  res.setHeader('Content-Type', 'application/json');
-  res.end(jsonData);
+  
+  res.send(jsonData);
 });
 app.use('/api/user', authUser);
 app.use(notfound);
