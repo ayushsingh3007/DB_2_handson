@@ -14,10 +14,10 @@ const authMiddleware = asyncHandler(async (req, res, next) => {
           next();
         }
       } catch (err) {
-        console.log('Authorization has failed. Please log in again.');
+         throw new Error(err,'Authorization has failed. Please log in again.');
       }
     } else {
-      console.log('There is no token.');
+       throw new Error('There is no token.');
     }
   });
   

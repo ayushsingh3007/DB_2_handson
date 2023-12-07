@@ -15,7 +15,7 @@ const createUser =asyncHandler( async (req, res) => {
         const newuser = await User.create(req.body);
         return res.json(newuser);
     } else {
-       console.log("User Already Exists")
+       throw new Error("User Already Exists")
     }
 });
 ///login a user
@@ -35,7 +35,7 @@ const loginUserCtrl=asyncHandler(async (req,res)=>{
       })
     }
     else{
-        console.log('invalid candentials please check the password')
+        throw new Error('invalid candentials please check the password')
     }
 })
 
@@ -126,7 +126,7 @@ const blockUser=asyncHandler(async(req,res)=>{
           res.json({message:"User Blocked"})
     }
     catch(err){
-      console.log(err)
+             throw new Error(err)
     }
 })
 
@@ -145,7 +145,7 @@ const unblockUser=asyncHandler(async(req,res)=>{
         res.json({message:"User unBlocked"})
   }
   catch(err){
-    console.log(err)
+      throw new Error(err)
   }
 })
  
@@ -203,7 +203,7 @@ const paymentController=asyncHandler(async (req, res) => {
   
       res.status(200).json({ clientSecret: paymentIntent.client_secret });
     } catch (error) {
-      console.error('Error creating PaymentIntent:', error.message);
+       throw new Error('Error creating PaymentIntent:', error.message);
       res.status(500).json({ error: 'Internal server error' });
     }
   

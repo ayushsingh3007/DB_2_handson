@@ -5,7 +5,7 @@ const dbConnect=()=>{
         const conn=mongoose.connect(process.env.Mongourl)
     }
     catch(err){
-        console.log(err);
+        throw new Error(err);
     }
 }
 module.exports=dbConnect;
