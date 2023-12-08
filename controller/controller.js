@@ -45,7 +45,7 @@ const loginUserCtrl=asyncHandler(async (req,res)=>{
     const {email,password}=req.body;
     const findUser=await User.findOne({email})
     ///check kar rahe ki user exist hai ya nahi
-    if(findUser && (await  findUser.isPasswordMatched(password))){
+    if(findUser && (await  findUser.isPasswordMatch(password))){
       res.json({
         _id:findUser?._id,
         firstname:findUser?.firstname,
@@ -56,9 +56,10 @@ const loginUserCtrl=asyncHandler(async (req,res)=>{
 
       })
     }
-    else{
-        throw new Error('invalid candentials please check the password')
+    else {
+      res.status(401).json({ message: 'Invalid credentials, please check the password' });
     }
+    
 })
 
 

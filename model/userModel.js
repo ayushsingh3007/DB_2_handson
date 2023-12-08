@@ -21,7 +21,7 @@ var userSchema = new mongoose.Schema({
     unique: true
   },
   number: {
-    type: String,
+    type:String,
     required: true
   },
   role: {
@@ -50,5 +50,4 @@ userSchema.methods.isPasswordMatch = async function (enteredPassword) {
   return await bcrypt.compare(enteredPassword, this.password);
 };
 
-const User = mongoose.model('User', userSchema);
-module.exports = User;
+module.exports=mongoose.model('User',userSchema)
