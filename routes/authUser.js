@@ -12,9 +12,9 @@ const {
   userdata,
   
   logout,
-  getUserCart,
-  emptyCart,
-  userCart,
+  
+  add_to_cart,
+
 } = require('../controller/controller');
 const { authMiddleware, isAdmin } = require('../middlewares/authMiddleware');
 
@@ -30,8 +30,8 @@ router.put('/edit-user', authMiddleware, updateUser);
 router.put('/block-user/:id', authMiddleware, isAdmin, blockUser);
 router.put('/unblock-user/:id', authMiddleware, isAdmin, unblockUser);
 router.get('/store', userdata); 
-router.get('/add-to-cart', authMiddleware,userCart); 
-router.delete('/empty-cart',authMiddleware,emptyCart)
+router.post('/add-to-cart', authMiddleware,add_to_cart); 
+
 
 
 module.exports = router;
