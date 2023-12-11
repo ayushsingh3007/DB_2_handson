@@ -5,7 +5,6 @@ const User = require('../model/userModel.js')
 const asyncHandler=require("express-async-handler");
 const { data } = require('../routes/data.js');
 const jwt=require('jsonwebtoken')
-const Cart=require('../model/cartModel.js');
 
 
 
@@ -239,6 +238,8 @@ const add_to_cart = asyncHandler(async (req, res) => {
     res.status(500).json({ status: 'error', message: 'Internal server error' });
   }
 });
+
+
 
 
 
