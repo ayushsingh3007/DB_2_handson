@@ -35,37 +35,31 @@ const createUser = asyncHandler(async (req, res) => {
   }
 });
 
-// Login a user
-const loginUserCtrl = asyncHandler(async (req, res) => {
+const login = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
-  // check if user exists or not
-  const findUser = await User.findOne({ email });
-  if (findUser && (await findUser.isPasswordMatched(password))) {
-    const refreshToken = await generateRefreshToken(findUser?._id);
-    const updateuser = await User.findByIdAndUpdate(
-      findUser.id,
-      {
-        refreshToken: refreshToken,
-      },
-      { new: true }
-    );
-    res.cookie("refreshToken", refreshToken, {
-      httpOnly: true,
-      maxAge: 72 * 60 * 60 * 1000,
-    });
-    res.json({
-      _id: findUser?._id,
-      firstname: findUser?.firstname,
-      lastname: findUser?.lastname,
-      email: findUser?.email,
-      number: findUser?.number,
 
-      token: generateToken(findUser?._id),
-    });
-  } else {
-    throw new Error("Invalid Credentials");
+  try {
+    const findUser = await User.findOne({ email });
+
+    if (findUser && (await findUser.isPasswordMatched(password))) {
+     return  res.json({
+        _id: findUser?._id,
+        firstname: findUser?.firstname,
+        lastname: findUser?.lastname,
+        email: findUser?.email,
+        number: findUser?.number,
+        password:findUser?.password,
+        token: generateToken(findUser?._id),
+        msg:"successfully login"
+      });
+    } else {
+      return res.send({ msg: "Invalid Credentials" });
+    }
+  } catch (err) {
+    return res.send({ msg: err.message });
   }
 });
+
 
 
 
@@ -257,4 +251,4 @@ const add_to_cart = asyncHandler(async (req, res) => {
 
 
  
-module.exports = {add_to_cart,createUser,loginUserCtrl,getallUser,getUser,deleteUser,updateUser,blockUser,unblockUser,logout,userdata };
+module.exports = {add_to_cart,createUser,login,getallUser,getUser,deleteUser,updateUser,blockUser,unblockUser,logout,userdata };

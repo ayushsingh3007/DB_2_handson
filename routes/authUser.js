@@ -1,7 +1,7 @@
 const express = require('express');
 const {
   createUser,
-  loginUserCtrl,
+  
   getallUser,
   getUser,
   deleteUser,
@@ -14,6 +14,7 @@ const {
   logout,
   
   add_to_cart,
+  login,
 
 } = require('../controller/controller');
 const { authMiddleware, isAdmin } = require('../middlewares/authMiddleware');
@@ -21,7 +22,7 @@ const { authMiddleware, isAdmin } = require('../middlewares/authMiddleware');
 const router = express.Router();
 
 router.post('/register', createUser);
-router.post('/login', authMiddleware,loginUserCtrl);
+router.post('/login', authMiddleware,login);
 router.post('/logout', authMiddleware, logout);
 router.get('/all-users', authMiddleware, isAdmin, getallUser);
 router.get('/user/:id', authMiddleware, isAdmin, getUser);
