@@ -7,3 +7,4 @@ const userId = username;
 const token = generateToken(userId);
 
 console.log(token); // Use the generated token as needed (e.g., send it to the client)
+module.exports=token;
