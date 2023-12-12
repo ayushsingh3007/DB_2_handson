@@ -1,11 +1,13 @@
+const mongoose = require('mongoose');
 
-const {default:mongoose}=require('mongoose')
-const dbConnect=()=>{
-    try{
-        const conn=mongoose.connect(process.env.Mongourl)
-    }
-    catch(err){
-        console.log(err);
-    }
-}
-module.exports=dbConnect;
+const dbConnect = () => {
+    mongoose.connect(process.env.Mongourl, { useNewUrlParser: true, useUnifiedTopology: true })
+        .then(() => {
+            console.log('MongoDB connected successfully');
+        })
+        .catch((err) => {
+            console.error('MongoDB connection error:', err.message);
+        });
+};
+
+module.exports = dbConnect;
