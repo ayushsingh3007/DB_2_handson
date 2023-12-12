@@ -5,56 +5,104 @@ const User = require('../model/userModel.js')
 const asyncHandler=require("express-async-handler");
 const { data } = require('../routes/data.js');
 const jwt=require('jsonwebtoken')
+const secretkey=require(process.env.JWT_SECRET)
 
 
 
 
-
+const saltround=10;
 
 // routes/data.js - Assuming this is your registration route
 const createUser = asyncHandler(async (req, res) => {
-  const email = req.body;
+ const user=req.body
+ 
+ try{
+  const samemail=await User.findOne({email:{$eq:user.email}})
 
-  try {
-    const findUser = await User.findOne({ email: email });
-
-    if (!findUser) {
-      const user = await User.create(req.body);
-      return res.send({ msg: "successfully register" });
-    } else {
-      return res.send({ msg: "user already exists" });
-    }
-  } catch (err) {
-    return res.send({ msg: err.message });
-  }
+ if(samemail){
+  console.log({msg:"email already exists"})
+  return res.send({msg:"email already exists"})
+}
+else{
+  // const gen=bcrypt.genSaltSync(saltround)
+  user.password=bcrypt.hashSync(user.password,saltround)
+  console.log(user.password)
+  const dbres1=await User.create(user)
+  console.log(dbres1)
+  const token= jwt.sign({user:user.email},secretkey,{expiresIn:'300000'})
+  console.log(token)
+  // arr.push(user)
+  
+  return res.send({msg:"user successfully registered",jwttoken:token})
+}
+// const registerdetails=req.body;
+// console.log(registerdetails)
+// const dbres1=await reg.create(registerdetails)
+// console.log(dbres1)
+// return res.send({msg:"registered successfully"})
+}
+catch(error){
+console.log(error)
+}
 });
 
+router1.post("/login",async (req,res)=>{
+  const logindetails=req.body;
+  try{    
+      console.log(logindetails)
+      const validmaildetails= await User.findOne({email:{$eq:logindetails.email}})
+      console.log(validmaildetails)
+      if(validmaildetails){
+          console.log({msg:"email already exists"}) 
+  
+          const comparedetails= bcrypt.compareSync(logindetails.password,validmaildetails.password)
+      
+          console.log(comparedetails)
+          if(comparedetails)
 
-const login = asyncHandler(async (req, res) => {
-  const { email, password } = req.body;
+              {
+                  const token = jwt.sign({ useremail: logindetails.email }, secretkey, { expiresIn: "360000" });
+                  console.log("token:", token);
+                  return res.send({ msg: "your login successfully", token: token, userdetail: validmaildetails });
+      
+          // return res.send({msg:"your login successfully"})
+              }
+          else{
+              return res.send({msg:"your password is wrong"})
+          }
+      }
+  
+      else{
+          return res.send({msg:"first you have to register or check your credentials"})
 
-  try {
-    const user = await User.findOne({ email });
+      }
+}
+catch(error){
+  return res.send({msg:error})
+} 
+})
 
-    if (user && (await user.isPasswordMatch(password))) {
-      const token = generateToken(user._id);
 
-      return res.status(200).json({
-        _id: user._id,
-        firstname: user.firstname,
-        lastname: user.lastname,
-        email: user.email,
-        number: user.number,
-        token,
-        msg: "Successfully logged in",
-      });
-    } else {
-      return res.status(401).json({ msg: "Invalid Credentials" });
-    }
-  } catch (err) {
-    return res.status(500).json({ msg: err.message });
-  }
-});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
