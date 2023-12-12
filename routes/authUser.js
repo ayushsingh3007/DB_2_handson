@@ -22,7 +22,7 @@ const { authMiddleware, isAdmin } = require('../middlewares/authMiddleware');
 const router = express.Router();
 
 router.post('/register', createUser);
-router.post('/login', authMiddleware,login);
+router.post('/login',login);
 router.post('/logout', authMiddleware, logout);
 router.get('/all-users', authMiddleware, isAdmin, getallUser);
 router.get('/user/:id', authMiddleware, isAdmin, getUser);

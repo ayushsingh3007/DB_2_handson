@@ -5,7 +5,7 @@ const User = require('../model/userModel.js')
 const asyncHandler=require("express-async-handler");
 const { data } = require('../routes/data.js');
 const jwt=require('jsonwebtoken')
-const {generateRefreshToken}=require('../config/refreshtoken.js')
+
 
 
 
@@ -14,7 +14,8 @@ const {generateRefreshToken}=require('../config/refreshtoken.js')
 
 const createUser = asyncHandler(async (req, res) => {
   
-  const email = req.body.email;
+  const email= req.body.email;
+
   
   try{
   const findUser = await User.findOne({ email: email });
@@ -39,24 +40,26 @@ const login = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
 
   try {
-    const findUser = await User.findOne({ email });
+    const user = await User.findOne({ email });
 
-    if (findUser && (await findUser.isPasswordMatched(password))) {
-     return  res.json({
-        _id: findUser?._id,
-        firstname: findUser?.firstname,
-        lastname: findUser?.lastname,
-        email: findUser?.email,
-        number: findUser?.number,
-        password:findUser?.password,
-        token: generateToken(findUser?._id),
-        msg:"successfully login"
+    if (user && (await user.isPasswordMatched(password))) {
+      const token = generateToken(user._id);
+
+      res.json({
+        _id: user._id,
+        firstname: user.firstname,
+        lastname: user.lastname,
+        email: user.email,
+        number: user.number,
+        token,
+        msg: "Successfully logged in",
       });
     } else {
-      return res.send({ msg: "Invalid Credentials" });
+      res.status(401).json({ msg: "Invalid Credentials" });
     }
   } catch (err) {
-    return res.send({ msg: err.message });
+    console.error(err);
+    res.status(500).json({ msg: "Internal Server Error" });
   }
 });
 
@@ -209,6 +212,10 @@ const userdata=asyncHandler(async(req,res)=>{
   const {_id}=req.body
   res.json(data)
 })
+
+
+
+
 ///add to cart
 
 
@@ -223,21 +230,21 @@ const add_to_cart = asyncHandler(async (req, res) => {
 
     const product = req.body.product;
 
-    // Check if the product is already in the user's cart
+    
     const existingProductIndex = user.cart.findIndex((item) => item.product.id === product._id);
 
     if (existingProductIndex !== -1) {
-      // If the product is already in the cart, update the quantity
+      
       user.cart[existingProductIndex].qty += 1;
     } else {
-      // If the product is not in the cart, add it with quantity 1
+    
       user.cart.push({ product, qty: 1 });
     }
 
-    // Save the updated user with the modified cart
+    
     const updatedUser = await user.save();
 
-    // Respond with the updated cart
+    
     res.status(200).json({ status: 'success', message: 'Added to cart successfully', cart: updatedUser.cart });
   } catch (error) {
     console.error('Error adding to cart:', error.message);
