@@ -4,14 +4,14 @@ const dbConnect = require('./config/dbConnect');
 const app = express();
 const cors = require('cors');
 const dotenv = require('dotenv').config();
-const PORT = process.env.PORT||5000;
 
+const PORT =process.env.PORT||5000
 const authUser = require('./routes/authUser');
 const bodyParser = require('body-parser');
 
 
 
-dbConnect()
+
 app.use(cors({
   origin:"*"
 }));
@@ -23,6 +23,12 @@ app.use('/api/user', authUser);
 
 
 
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-});
+app.listen(PORT,async ()=>{
+  try{
+      await dbConnect();
+      console.log("server is running with",PORT)
+  }
+  catch(error){
+      console.log(error)
+  }
+})

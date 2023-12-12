@@ -5,10 +5,8 @@ const User = require('../model/userModel.js')
 const asyncHandler=require("express-async-handler");
 const { data } = require('../routes/data.js');
 const jwt=require('jsonwebtoken')
-const secretkey=require(process.env.JWT_SECRET)
 
-
-
+const bcrypt=require('bcrypt')
 
 const saltround=10;
 
@@ -29,11 +27,10 @@ else{
   console.log(user.password)
   const dbres1=await User.create(user)
   console.log(dbres1)
-  const token= jwt.sign({user:user.email},secretkey,{expiresIn:'300000'})
-  console.log(token)
+  
   // arr.push(user)
   
-  return res.send({msg:"user successfully registered",jwttoken:token})
+  return res.send({msg:"user successfully registered",generateToken})
 }
 // const registerdetails=req.body;
 // console.log(registerdetails)
@@ -46,7 +43,7 @@ console.log(error)
 }
 });
 
-router1.post("/login",async (req,res)=>{
+const login=(async (req,res)=>{
   const logindetails=req.body;
   try{    
       console.log(logindetails)
@@ -61,9 +58,9 @@ router1.post("/login",async (req,res)=>{
           if(comparedetails)
 
               {
-                  const token = jwt.sign({ useremail: logindetails.email }, secretkey, { expiresIn: "360000" });
-                  console.log("token:", token);
-                  return res.send({ msg: "your login successfully", token: token, userdetail: validmaildetails });
+                  
+                  
+                  return res.send({ msg: "your login successfully", token: generateToken,userdetail: validmaildetails });
       
           // return res.send({msg:"your login successfully"})
               }
