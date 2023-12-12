@@ -11,57 +11,33 @@ const jwt=require('jsonwebtoken')
 
 
 
-
+// routes/data.js - Assuming this is your registration route
 const createUser = asyncHandler(async (req, res) => {
-  
-  const email= req.body.email;
-
-  
-  try{
-  const findUser = await User.findOne({ email: email });
-
-  if (!findUser) {
-
-    const newUser = await User.create(req.body);
-    
-  return res.send({msg:"successfully resgister"})}
-
-  
-   else{
-       return res.send({msg:"user already exists"})
-   }
-  }
-  catch(err){
-       return res.send({msg:err})
-  }
-});
-
-const login = asyncHandler(async (req, res) => {
-  const { email, password } = req.body;
+  const email = req.body.email;
 
   try {
-    const user = await User.findOne({ email });
+    const findUser = await User.findOne({ email: email });
 
-    if (user && (await user.isPasswordMatched(password))) {
-      const token = generateToken(user._id);
-
-      res.json({
-        _id: user._id,
-        firstname: user.firstname,
-        lastname: user.lastname,
-        email: user.email,
-        number: user.number,
-        token,
-        msg: "Successfully logged in",
-      });
+    if (!findUser) {
+      const user = await User.create(req.body);
+      return res.send({ msg: "successfully register" });
     } else {
-      res.status(401).json({ msg: "Invalid Credentials" });
+      return res.send({ msg: "user already exists" });
     }
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ msg: "Internal Server Error" });
+    return res.send({ msg: err.message });
   }
 });
+
+
+const login=async((req,res)=>{
+
+
+
+
+
+
+})
 
 
 
