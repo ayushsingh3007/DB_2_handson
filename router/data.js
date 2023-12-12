@@ -1,4 +1,4 @@
-
+const store=require('express').Router()
 
  
 const data=
@@ -276,6 +276,7 @@ const data=
     }
 ]
 
-
-
-module.exports={data};
+store.get('/store',(req,res)=>{
+    res.json(data)
+})
+module.exports=store;
