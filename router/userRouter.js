@@ -2,7 +2,7 @@ const express = require('express');
 const route = express.Router();
 const bcrypt = require('bcrypt');
 const jwt=require('jsonwebtoken')
-const secretkey=process.env.SECRET_KEY
+const secretkey="AYUSHSINGH"
 const saltRound = 10;
 let arr = [];
 
@@ -45,4 +45,4 @@ route.get("/getuserdatafromdatabase", (req, res) => {
     return res.send(arr);
 });
 
-module.exports = {route};
+module.exports = route;

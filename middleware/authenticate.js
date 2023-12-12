@@ -1,5 +1,5 @@
 const jwt=require('jsonwebtoken')
-const secretkey=process.env.SECRET_KEY
+const secretkey="AYUSHSINGH"
 
 
 
@@ -11,7 +11,7 @@ const auth=(req,res,next)=>{
      console.log(data,"data");
      const token=data.split(' ')[1]
      console.log("token",token);
-     jwt.verify(token,process.env.SECRET_KEY,(err,validate)=>{
+     jwt.verify(token,secretkey,(err,validate)=>{
         if(err){
             return res.send(err)
         }
