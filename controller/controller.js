@@ -30,14 +30,31 @@ const createUser = asyncHandler(async (req, res) => {
 });
 
 
-const login=async((req,res)=>{
+const login = asyncHandler(async (req, res) => {
+  const { email, password } = req.body;
 
+  try {
+    const user = await User.findOne({ email });
 
+    if (user && (await user.isPasswordMatch(password))) {
+      const token = generateToken(user._id);
 
-
-
-
-})
+      return res.status(200).json({
+        _id: user._id,
+        firstname: user.firstname,
+        lastname: user.lastname,
+        email: user.email,
+        number: user.number,
+        token,
+        msg: "Successfully logged in",
+      });
+    } else {
+      return res.status(401).json({ msg: "Invalid Credentials" });
+    }
+  } catch (err) {
+    return res.status(500).json({ msg: err.message });
+  }
+});
 
 
 

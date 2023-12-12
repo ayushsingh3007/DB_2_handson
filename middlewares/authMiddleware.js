@@ -1,5 +1,3 @@
-// authMiddleware.js
-
 const User = require('../model/userModel.js');
 const jwt = require("jsonwebtoken");
 const asyncHandler = require('express-async-handler');
@@ -9,13 +7,13 @@ const authMiddleware = asyncHandler(async (req, res, next) => {
 
   if (req?.headers?.authorization?.startsWith("Bearer")) {
     token = req.headers.authorization.split(" ")[1];
-    console.log('Received token:', token);  
-    try {
-     
+    console.log('Received token:', token);
 
+    try {
       if (token) {
-        const decoded = jwt.verify(token,process.env.JWT_SECRET)
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
         console.log('Decoded token:', decoded);
+
         const user = await User.findById(decoded?.id);
 
         if (user) {
@@ -35,7 +33,7 @@ const authMiddleware = asyncHandler(async (req, res, next) => {
     res.status(401).json({ message: 'Authorization header is missing or invalid.' });
   }
 });
-// isAdmin.js
+
 const isAdmin = asyncHandler(async (req, res, next) => {
   const { email } = req.user;
 
@@ -51,7 +49,5 @@ const isAdmin = asyncHandler(async (req, res, next) => {
     res.status(500).json({ status: 'error', message: 'Internal Server Error' });
   }
 });
-
-
 
 module.exports = { authMiddleware, isAdmin };
