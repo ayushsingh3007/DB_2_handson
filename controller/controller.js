@@ -13,7 +13,7 @@ const jwt=require('jsonwebtoken')
 
 // routes/data.js - Assuming this is your registration route
 const createUser = asyncHandler(async (req, res) => {
-  const email = req.body.email;
+  const email = req.body;
 
   try {
     const findUser = await User.findOne({ email: email });
