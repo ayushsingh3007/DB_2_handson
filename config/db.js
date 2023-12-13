@@ -13,4 +13,5 @@ const connection =async()=>{
     }
 }
 
-module.exports=connection
+const databaseName=mongoserver.db("Eccomerce")
+module.exports={connection,databaseName}
