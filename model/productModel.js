@@ -30,4 +30,4 @@ const productModel= new mongoose.Schema({
        required:true
     }
 })
-const productcollection=("product",productModel)
+module.exports=("product",productModel)

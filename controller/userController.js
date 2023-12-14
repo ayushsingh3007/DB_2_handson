@@ -100,4 +100,4 @@ const payment= async (req, res) => {
 
 
 
-module.exports={register,login,addtocart,payment}
+module.exports={register,login,payment}
