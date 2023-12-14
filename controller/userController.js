@@ -1,13 +1,15 @@
 const bcrypt = require('bcrypt');
 const jwt=require('jsonwebtoken');
 const usercollection = require('../model/userModel');
+const stripe=require('stripe')("sk_test_51OK7daSAg3lXy8qLZhheRgo3J3APhi6R52IAFx3uP0NwcRhA5MXL1WkNx9p73iwoMSHmNRsEJ6LyVwnhkcrQYGIB00X6Jf63tM")
+
 const secretkey="AYUSHSINGH"
 
 // const {databaseName}=require("../config/db")
 // const usercollection=databaseName.collection("userdetails")
 
 const saltRound=10
-// const arr=[]
+
 const register=async(req, res) => {
     const data = req.body;
     console.log(data)
@@ -60,29 +62,6 @@ const login=async(req, res) => {
 
 
 
-let cart = [];
-
-// Route to add an item to the cart
-const addtocart=async(req, res) => {
-  const { product } = req.body;
-
-  if (!product) {
-    return res.status(400).json({ error: 'Product information is required' });
-  }
-
-  // Check if the product is already in the cart
-   const existingProduct = cart.find((item) => item.id === product.id);
-
-  if (existingProduct) {
-    // If the product is already in the cart, update the quantity
-    existingProduct.qty += 1;
-  } else {
-    // If the product is not in the cart, add it
-    cart.push({ ...product, qty: 1 });
-  }
-
-  res.json({ cart });
-}
 
 
 
@@ -92,7 +71,33 @@ const addtocart=async(req, res) => {
 
 
 
+const payment= async (req, res) => {
+ const  {products}=req.body
+  console.log(products)
+  
+  
+  const lineItems=products.map((product)=>({
+    price_data:{
+      currency:"inr",
+      product_data:{
+        name:product.Name
+      },
+      unit_amount:product.price*100
+    },
+    quantity:product.qty
+  }))
+  const session =await stripe.checkout.sessions.create({
+    payment_method_types:["card"],
+    line_items:lineItems,
+    mode:"payment",
+    success_url:"http://localhost:3000/",
+    cancel_url:"http://localhost:3000/cart",
+  });
+  res.json({id:session.id})
+};
 
 
 
-module.exports={register,login,addtocart}
+
+
+module.exports={register,login,addtocart,payment}

@@ -1,26 +1,27 @@
-const jwt=require('jsonwebtoken')
-const secretkey="AYUSHSINGH"
+const jwt = require('jsonwebtoken')
+const secretkey = "AYUSHSINGH"
 
+const authenticate = (req, res, next) => {
+    const authorizationHeader = req.headers['authorization'];
 
+    if (!authorizationHeader) {
+        return res.status(401).json({ msg: "Authorization header is missing" });
+    }
 
+    const token = authorizationHeader.split(' ')[1];
 
-
-
-const auth=(req,res,next)=>{
-     const data=req.headers['authorization']
-     console.log(data,"data");
-     const token=data.split(' ')[1]
-     console.log("token",token);
-     jwt.verify(token,secretkey,(err,validate)=>{
-        if(err){
-            return res.send(err)
+    jwt.verify(token, secretkey, (err, validate) => {
+        if (err) {
+            return res.status(403).json({ msg: "Token validation failed" });
         }
-        if(validate){
-            return  next();
-            }
-            return res.send({msg:"user not authorized"})
 
-     })
-   
+        if (validate) {
+            req.user = validate;
+            return next();
+        }
+
+        return res.status(403).json({ msg: "User not authorized" });
+    });
 }
-module.exports=auth;
+
+module.exports = authenticate;
