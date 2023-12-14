@@ -1,17 +1,17 @@
-const {MongoClient}=require("mongodb")
-const mongodburl="mongodb://localhost:27017"
+const mongoose=require('mongoose')
+mongoose.set("strictQuery",true);
 
-const mongoserver=new MongoClient(mongodburl)
+const cloudurl="mongodb+srv://ayushsingh6394:mrayush123@cluster0.3caz3os.mongodb.net/?retryWrites=true&w=majority"
 
-const connection =async()=>{
+
+const connection=async()=>{
     try{
-     await mongoserver.connect()
-     console.log("connection established");
+       await mongoose.connect(cloudurl)
+       console.log("db connected successfully");
     }
     catch(err){
-        console.log(`error accur ${err}`);
+         console.log(err);
     }
 }
+module.exports=connection
 
-const databaseName=mongoserver.db("Eccomerce")
-module.exports={connection,databaseName}
