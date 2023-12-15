@@ -3,10 +3,13 @@ const mongoose=require('mongoose')
 const userModel= new mongoose.Schema({
    firstname:{
       type:String,
+      required:true
       
    },
    lastname:{
         type:String,
+        required:true
+
         
    },
    password:{
@@ -19,6 +22,7 @@ const userModel= new mongoose.Schema({
    },
    number:{
       type:Number,
+      required:true
       
    }
 

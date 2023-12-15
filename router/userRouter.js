@@ -6,7 +6,7 @@ const route = express.Router();
 
 route.post("/register",register );
 
-route.post("/create-checkout-session",authenticate,payment)
+route.post("/create-checkout-session",payment)
 
 route.post("/login", login);
 // route.get("/getuserdatafromdatabase", (req, res) => {

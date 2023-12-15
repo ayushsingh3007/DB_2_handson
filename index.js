@@ -7,7 +7,7 @@ const dotenv=require('dotenv');
 const userRouter = require('./router/userRouter');
 const store = require('./router/data');
 const connection= require('./config/db');
-// const productRouter = require('./router/productRouter');
+// const cart_route = require('./router/productRouter');
 
 
 dotenv.config();
@@ -19,7 +19,7 @@ app.use(cors({
 
 app.use(express.json());
 
-// app.use('/api/user',productRouter)
+// app.use('/api/user',cart_route)
 app.use("/api/user",userRouter);
 app.use("/api/user",store)
 

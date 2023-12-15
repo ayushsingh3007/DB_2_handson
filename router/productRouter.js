@@ -1,10 +1,8 @@
-const { inserSingleProduct, deleteSinglePruduct } = require('../controller/prductController')
-const auth = require('../middleware/authenticate')
+const express = require('express');
+const cart_route = express.Router();
+const { addtocart } = require('../controller/prductController');
+const authenticate = require('../middleware/authenticate');
 
-const productRouter=require('express').Router()
+cart_route.post('/add-to-cart', authenticate, addtocart);
 
-
-productRouter.post('/create',auth , inserSingleProduct)
-productRouter.delete('/delete',auth,deleteSinglePruduct)
-
-module.exports={productRouter}
+module.exports = cart_route;
