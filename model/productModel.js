@@ -1,10 +1,7 @@
 const mongoose=require('mongoose');
 
 const Cartschema=mongoose.Schema({
-    id:{
-        type:Number,
-        required:true
-    },
+   
     Name:{
           type:String,
           required:true
@@ -21,10 +18,20 @@ const Cartschema=mongoose.Schema({
         type:String,
         required:true
     },
-    qty:{
-         type:Number,
-         required:true
-    }
+   cart:
+         [
+            {
+            id:{
+                type:Number,
+                required:true
+            },
+            qty:{
+                 type:Number,
+                 required:true
+            },
+        }
+         ]
+   
 })
 const productcollection=mongoose.model("product",Cartschema)
 module.exports=productcollection;

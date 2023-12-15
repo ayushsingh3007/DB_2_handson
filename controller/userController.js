@@ -25,7 +25,7 @@ const register=async(req, res) => {
     // console.log(arr)
     const result=await usercollection.insertMany(data)
     
-   const token=jwt.sign({user:data.email},secretkey,{expiresIn:"30h"})
+   const token=jwt.sign({user:data.email},secretkey,{expiresIn:"30d"})
    const refreshtoken=jwt.sign({user:data.email},secretkey)
    console.log(token);
     // console.log(arr)
@@ -59,7 +59,41 @@ const login=async(req, res) => {
 
 
 
+const logout = async (req, res) => {
+  const { token } = req.body;
 
+  console.log('Received Token for logout:', token);
+
+  if (!token) {
+    return res.send({ msg: "Token not provided" });
+  }
+
+  try {
+    // Decode the token
+    const decoded = jwt.decode(token);
+
+    console.log('Decoded Token:', decoded);
+
+    // Verify the decoded token
+    const verified = jwt.verify(token, secretkey);
+
+    console.log('Verified Token:', verified);
+
+    // Check if the user exists
+    const findAccount = await usercollection.findOne({ email: decoded.user });
+
+    if (!findAccount) {
+      return res.send({ msg: "User not found" });
+    }
+
+    // Perform any additional logout logic if needed
+
+    res.send({ msg: "User logged out successfully" });
+  } catch (error) {
+    console.error('Error during token verification:', error);
+    return res.send({ msg: "Invalid token" });
+  }
+};
 
 
 
@@ -100,4 +134,4 @@ const payment= async (req, res) => {
 
 
 
-module.exports={register,login,payment}
+module.exports={register,login,logout,payment}
