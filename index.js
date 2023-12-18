@@ -7,6 +7,7 @@ const dotenv=require('dotenv');
 const userRouter = require('./router/userRouter');
 const store = require('./router/data');
 const connection= require('./config/db');
+
 // const cart_route = require('./router/productRouter');
 
 
@@ -21,7 +22,7 @@ app.use(express.json());
 
 // app.use('/api/user',cart_route)
 app.use("/api/user",userRouter);
-app.use("/api/user",store)
+app.use("/api/user",  store)
 
 app.listen(port, async() => {
     try{
