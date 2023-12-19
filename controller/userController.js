@@ -187,6 +187,9 @@ const payment= async (req, res) => {
     success_url:"https://ecommerce-website-ruddy.vercel.app/",
     cancel_url:"https://ecommerce-website-ruddy.vercel.app/cart",
   });
+    const user = req.user;
+      user.cart = [];
+      await user.save();
   res.json({id:session.id})
 };
 
