@@ -24,7 +24,19 @@ const userModel= new mongoose.Schema({
       type:Number,
       required:true
       
-   }
+   },
+   cart: [
+      {
+          product: {
+              type: mongoose.Schema.Types.ObjectId,
+              ref: 'product',
+          },
+          qty: {
+              type: Number,
+              required: true,
+          },
+      },
+  ],
 
 
 
