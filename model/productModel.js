@@ -14,6 +14,10 @@ const Cartschema=mongoose.Schema({
          type:Number,
          required:true
     },
+    des:{
+        type:String,
+        required:true
+    },
     type:{
         type:String,
         required:true
