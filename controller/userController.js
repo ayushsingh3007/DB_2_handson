@@ -164,37 +164,36 @@ cart_collection=async (req, res) => {
 
 
 
+const payment = async (req, res) => {
+  const { products } = req.body;
+  console.log(products);
 
-const payment= async (req, res) => {
- const  {products}=req.body
-  console.log(products)
-  
-  
-  const lineItems=products.map((product)=>({
-    price_data:{
-      currency:"inr",
-      product_data:{
-        name:product.Name
+  const lineItems = products.map((product) => ({
+      price_data: {
+          currency: "inr",
+          product_data: {
+              name: product.Name
+          },
+          unit_amount: product.price * 100
       },
-      unit_amount:product.price*100
-    },
-    quantity:product.qty
-  }))
-  const session =await stripe.checkout.sessions.create({
-    payment_method_types:["card"],
-    line_items:lineItems,
-    mode:"payment",
-    success_url:"https://ecommerce-website-ruddy.vercel.app/",
-    cancel_url:"https://ecommerce-website-ruddy.vercel.app/cart",
-  });
-    const user = req.user;
-      user.cart = [];
-      await user.save();
-  res.json({id:session.id})
+      quantity: product.qty
+  }));
+
+  try {
+      const session = await stripe.checkout.sessions.create({
+          payment_method_types: ["card"],
+          line_items: lineItems,
+          mode: "payment",
+          success_url: "http://localhost:3000/",
+          cancel_url: "http://localhost:3000/cart",
+      });
+
+      res.json({ id: session.id });
+  } catch (error) {
+      console.error("Error creating checkout session:", error);
+      res.status(500).json({ error: "Internal Server Error" });
+  }
 };
+ 
 
-
-
-
-
-module.exports={register,login,payment,cart_collection,auth}
+module.exports={register,login,payment,auth}
