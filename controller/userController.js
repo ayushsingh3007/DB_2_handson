@@ -184,8 +184,8 @@ const payment = async (req, res) => {
           payment_method_types: ["card"],
           line_items: lineItems,
           mode: "payment",
-          success_url: "http://localhost:3000/",
-          cancel_url: "http://localhost:3000/cart",
+          success_url: "https://ecommerce-website-ruddy.vercel.app/",
+          cancel_url: "https://ecommerce-website-ruddy.vercel.app/cart",
       });
 
       res.json({ id: session.id });
